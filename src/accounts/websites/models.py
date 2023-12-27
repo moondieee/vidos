@@ -21,7 +21,13 @@ class Website(models.Model):
         blank=True,
         null=True
     )
+    created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Время добавления сайта',
+        db_index=True
+    )
 
     class Meta:
         verbose_name = 'Вебсайт клиента'
         verbose_name = 'Вебсайты клиентов'
+        ordering = ('created',)

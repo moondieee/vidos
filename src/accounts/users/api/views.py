@@ -1,6 +1,6 @@
 import logging
 
-from rest_framework import generics, permissions
+from rest_framework import generics, mixins, permissions
 from rest_framework.response import Response
 
 from .serializers import UserGETSerializer
@@ -8,7 +8,8 @@ from .serializers import UserGETSerializer
 logger = logging.getLogger(__name__)
 
 
-class UserMeAPIView(generics.GenericAPIView):
+class UserMeAPIView(mixins.RetrieveModelMixin,
+                    generics.GenericAPIView):
     serializer_class = UserGETSerializer
     permission_classes = (permissions.IsAuthenticated,)
 

@@ -25,7 +25,7 @@ urlpatterns = [
 
     # Swagger doc
     path(
-        'api/v1/accounts/swagger/',
+        'accounts/swagger/',
         schema_view.with_ui(
             'swagger',
             cache_timeout=0
@@ -33,7 +33,7 @@ urlpatterns = [
         name='schema-swagger-ui'
     ),
     path(
-        'api/v1/accounts/redoc/',
+        'accounts/redoc/',
         schema_view.with_ui(
             'redoc',
             cache_timeout=0
@@ -42,7 +42,8 @@ urlpatterns = [
     ),
 
     # API
-    path('api/v1/accounts', include('users.api.urls')),
+    path('api/v1/accounts/', include('users.api.urls')),
+    path('api/v1/accounts/', include('websites.api.urls')),
 ]
 
 urlpatterns += static(

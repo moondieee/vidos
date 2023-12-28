@@ -11,6 +11,6 @@ class UserGETSerializer(serializers.ModelSerializer):
             'email',
             'full_name',
             'company',
-            'crm'
+            'crm',
         )
         read_only_fields = fields

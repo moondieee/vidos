@@ -30,4 +30,4 @@ class Website(models.Model):
     class Meta:
         verbose_name = 'Вебсайт клиента'
         verbose_name = 'Вебсайты клиентов'
-        ordering = ('created',)
+        ordering = ('-created',)

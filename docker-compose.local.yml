@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  # Storages
+  minio:
+    image: docker.io/bitnami/minio:2022
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    networks:
+      - minionetwork
+    volumes:
+      - 'minio_data:/data'
+    env_file: .env
+
+  mongodb:
+    image: mongo:4.4.6
+    restart: always
+    ports:
+      - "27017:27017"
+    env_file: .env
+  
+  # Backend
+  accounts:
+    build: ./src/accounts
+    ports:
+      - "8000:8000"
+    env_file: .env
+
+  video_insert:
+    build: ./src/video_insert
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src/video_insert:/app/source
+    depends_on:
+      - mongodb
+      - minio
+    env_file: .env
+
+networks:
+  minionetwork:
+    driver: bridge
+
+volumes:
+  minio_data:
+    driver: local

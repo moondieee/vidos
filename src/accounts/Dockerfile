@@ -1,5 +1,7 @@
 FROM python:3.10.12
 
+WORKDIR /app
+
 RUN pip install poetry
 
 COPY . .

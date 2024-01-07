@@ -18,14 +18,18 @@ class FileUpload(BaseModel):
         if sync_video_widgets.find_one(
             {
                 '_id': values.get('video_widget_id'),
-                'videos.id': video_id
+                'videos': {
+                    '$elemMatch': {
+                        'id': video_id
+                    }
+                }
             }
         ):
             return video_id
 
         raise HTTPException(
             status_code=400,
-            detail='Video with specified id'
+            detail='Video with specified video_widget_id or video_id does not exists'
         )
 
     @validator('file')
@@ -49,6 +53,7 @@ class FileUpload(BaseModel):
 
 class FileUploadResponse(BaseModel):
     filename: str
+    url: str
 
     class Config:
         json_encoders = {ObjectId: str}

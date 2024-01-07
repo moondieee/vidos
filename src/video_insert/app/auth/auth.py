@@ -34,26 +34,17 @@ async def auth_base(token: str) -> dict:
             user = response.json()
             return user
 
-        detail = response.json()
-        detail['service'] = 'accounts'
         raise HTTPException(
             status_code=response.status_code,
-            detail=detail,
+            detail=response.json().get('detail'),
             headers={'WWW-Authenticate': 'Token'},
         )
 
-    except requests.exceptions.HTTPError as errh:
-        logger.error(f'HTTP Error: {errh}')
-        raise HTTPException(status_code=500, detail='HTTP Error occurred')
-    except requests.exceptions.ConnectionError as errc:
-        logger.error(f'Error Connecting: {errc}')
-        raise HTTPException(status_code=500, detail='Connection Error occurred')
-    except requests.exceptions.Timeout as errt:
-        logger.error(f'Timeout Error: {errt}')
-        raise HTTPException(status_code=500, detail='Timeout Error occurred')
     except requests.exceptions.RequestException as err:
-        logger.error(f'Something went wrong: {err}')
-        raise HTTPException(status_code=500, detail='Something went wrong')
+        logger.error(f'An error occurred: {err}')
+        raise HTTPException(
+            status_code=500, detail='An error occurred during the request to auth service'
+        )
 
 
 async def auth(token: str = Depends(auth_header)) -> dict:

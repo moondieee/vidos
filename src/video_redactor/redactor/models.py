@@ -45,3 +45,8 @@ class VideoWidget(Document):
     videos = fields.EmbeddedDocumentListField(
         Video
     )
+
+    meta = {
+        # The default name is incorrect (video_widget)
+        'collection': 'video_widgets'
+    }

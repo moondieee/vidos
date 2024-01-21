@@ -190,7 +190,8 @@ ACCOUNTS_API_URL = os.getenv('ACCOUNTS_API_URL')
 
 MONGODB_DATABASES = {
     'default': {
-        'name': os.getenv('MONGO_DATABASE'),
+        # MONGO_DATABASE - main database with collections (video_widgets and etc.)
+        'name': os.getenv('MONGO_DATABASE', 'database'),
         'host': os.getenv('MONGO_HOST'),
         'port': int(os.getenv('MONGO_PORT')),
         'username': os.getenv('MONGO_INITDB_ROOT_USERNAME'),

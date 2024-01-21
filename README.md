@@ -8,6 +8,8 @@
 
 - Video Insert: Отвечает за загрузку видео на сервис. Используется FastAPI, MongoDB, MinIO
 
+- Video Redactor: Отвечает за создание структуры виджета. Используется Django REST Framework (DRF), DRFmongoengine, MongoDB
+
 ### Стек используемых основных технологий
 
 | Программа    | Версия |

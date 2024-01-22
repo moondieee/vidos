@@ -1,0 +1,91 @@
+version: '3'
+
+volumes:
+  # Storages
+  minio_data:
+  mongodb_data:
+  mongodb_config:
+  pg_data:
+  # Static
+  static:
+
+services:
+  # Storages
+  minio:
+    image: docker.io/bitnami/minio:2022
+    volumes:
+      - 'minio_data:/data'
+    ports:
+      - 9000:9000
+      - 9001:9001
+    env_file: .env
+
+  postgresql:
+    image: postgres:13
+    ports:
+      - 5432:5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    env_file: .env
+
+  mongodb:
+    image: mongo:4.4.6
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    env_file: .env
+
+  # Gateway
+  gateway:
+    build: ./src/gateway
+    volumes:
+      - static:/staticfiles
+    depends_on:
+      - 'accounts'
+      - 'video_insert'
+      - 'video_redactor'
+      - 'video_widget_schema_provider'
+      - 'minio'
+      - 'postgresql'
+      - 'mongodb'
+    ports:
+      - 3000:80
+
+  # Backend
+  accounts:
+    build: ./src/accounts
+    depends_on:
+      - 'postgresql'
+    env_file: .env
+
+  video_insert:
+    build: ./src/video_insert
+    depends_on:
+      - mongodb
+      - minio
+    env_file: .env
+
+  video_redactor:
+    build: ./src/video_redactor
+    depends_on:
+      - mongodb
+    env_file: .env
+  
+  video_widget_schema_provider:
+    build: ./src/video_widget_schema_provider
+    depends_on:
+      - mongodb
+    env_file: .env
+
+  # Frontend
+  home:
+    build: ./src/home
+    volumes:
+      - static:/frontend_static
+    depends_on:
+      - mongodb
+      - minio
+    env_file: .env

@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 async def upload_file(
     file: UploadFile
 ) -> dict | None:
-    
+
     minio_endpoint = f'{settings.MINIO_HOST}:{settings.MINIO_PORT}'
     client = MinioClient(
         endpoint=minio_endpoint,
@@ -26,7 +26,7 @@ async def upload_file(
     )
 
     client.upload_file(file=file)
-    
+
     protocol = "https" if settings.MINIO_SECURE else "http"
     file_url = (
         f'{protocol}://'
@@ -55,7 +55,7 @@ async def update_video_url(
     if existing_video:
         update_query = {
             '$set': {
-                f'videos.$[v].video_url': file_url
+                'videos.$[v].video_url': file_url
             }
         }
         array_filters = [{'v.id': file.video_id}]

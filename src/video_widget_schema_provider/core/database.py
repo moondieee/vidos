@@ -10,7 +10,7 @@ client = motor_asyncio.AsyncIOMotorClient(
 )
 db = client.database
 
-video_widgets = db['video_widgets']
+video_widgets = db.get_collection('video_widgets')
 
 
 class PyObjectId(ObjectId):

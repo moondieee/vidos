@@ -7,7 +7,7 @@ class Button(BaseModel):
     id: int
     type: str | None
     name: str | None
-    video_id: int | None
+    video_id: int = None
 
 
 class Video(BaseModel):

@@ -1,3 +1,4 @@
+from bson import ObjectId
 import logging
 
 from datetime import datetime
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 async def upload_file(
     file: UploadFile
 ) -> dict | None:
-    
+
     minio_endpoint = f'{settings.MINIO_HOST}:{settings.MINIO_PORT}'
     client = MinioClient(
         endpoint=minio_endpoint,
@@ -26,7 +27,7 @@ async def upload_file(
     )
 
     client.upload_file(file=file)
-    
+
     protocol = "https" if settings.MINIO_SECURE else "http"
     file_url = (
         f'{protocol}://'
@@ -46,41 +47,37 @@ async def update_video_url(
     file: FileUpload, file_url: str
 ) -> None:
     filter_query = {
-        '_id': file.video_widget_id,
-        'videos.id': file.video_id
+        '_id': ObjectId(file.video_widget_id),
+        'videos._id': file.video_id
     }
-
-    existing_video = await video_widgets.find_one(filter_query)
-
-    if existing_video:
-        update_query = {
-            '$set': {
-                f'videos.$[v].video_url': file_url
-            }
-        }
-        array_filters = [{'v.id': file.video_id}]
-
-        try:
-            await video_widgets.update_one(
-                filter_query,
-                update_query,
-                array_filters=array_filters
-            )
-        except Exception as err:
-            detail = 'Error updating URL of video in video widget'
-            logger.error(
-                '%s. %s',
-                detail,
-                err
-            )
-            raise HTTPException(
-                status_code=400,
-                detail='Error updating URL of video in video widget'
-            )
-    else:
+    if not await video_widgets.find_one(filter_query):
         raise HTTPException(
             status_code=400,
-            detail='Video with specified video_widget_id or video_id does not exist'
+            detail='1 Video with specified video_widget_id or video_id does not exist'
+        )
+
+    update_query = {
+        '$set': {
+            'videos.$[v].video_url': file_url
+        }
+    }
+    array_filters = [{'v._id': file.video_id}]
+    try:
+        await video_widgets.update_one(
+            filter_query,
+            update_query,
+            array_filters=array_filters
+        )
+    except Exception as err:
+        detail = 'Error updating URL of video in video widget'
+        logger.error(
+            '%s. %s',
+            detail,
+            err
+        )
+        raise HTTPException(
+            status_code=400,
+            detail='Error updating URL of video in video widget'
         )
 
 

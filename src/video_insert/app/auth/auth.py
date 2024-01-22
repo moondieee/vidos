@@ -24,7 +24,7 @@ async def auth_header(request: Request) -> str | None:
 async def auth_base(token: str) -> dict:
     try:
         response = requests.get(
-            f'{settings.AUTH_SERVICE_URL}/api/v1/accounts/users/me/',
+            f'{settings.ACCOUNTS_API_URL}/users/me/',
             headers={
                 'Authorization': f'Token {token}',
                 'Content-Type': 'application/json'

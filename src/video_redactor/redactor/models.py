@@ -3,6 +3,10 @@ Video widgets models by using BongoDB.
 """
 from mongoengine import Document, EmbeddedDocument, fields
 
+TYPE_CHOICES = [
+    'VIDEO', 'REDIRECT', 'CONTACT_FORM', 'CALLBACK'
+]
+
 
 class Button(EmbeddedDocument):
     id = fields.SequenceField(
@@ -10,7 +14,8 @@ class Button(EmbeddedDocument):
         sequence_name='button_id_sequence'
     )
     type = fields.StringField(
-        required=True
+        required=True,
+        choices=TYPE_CHOICES
     )
     name = fields.StringField(
         required=True,

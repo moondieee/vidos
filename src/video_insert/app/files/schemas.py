@@ -3,24 +3,24 @@ from fastapi import HTTPException, UploadFile
 from pydantic import BaseModel, validator
 
 from app.files.utils import form_body
-from core.database import PyObjectId, sync_video_widgets
+from core.database import sync_video_widgets
 from core.settings import settings
 
 
 @form_body
 class FileUpload(BaseModel):
     file: UploadFile
-    video_widget_id: PyObjectId
+    video_widget_id: str
     video_id: int
 
     @validator('video_id')
     def validate_video_id_exists(cls, video_id: int, values):
         if sync_video_widgets.find_one(
             {
-                '_id': values.get('video_widget_id'),
+                '_id': ObjectId(values.get('video_widget_id')),
                 'videos': {
                     '$elemMatch': {
-                        'id': video_id
+                        '_id': video_id
                     }
                 }
             }

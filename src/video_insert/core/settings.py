@@ -38,7 +38,7 @@ class Settings(BaseSettings):
     MINIO_URI: str = None
 
     # Backend services urls
-    AUTH_SERVICE_URL = "http://localhost:8000"
+    ACCOUNTS_API_URL = os.getenv('ACCOUNTS_API_URL')
 
     # Videos
     MAX_VIDEO_SIZE_MB = int(os.getenv('MAX_VIDEO_SIZE_MB', '50'))

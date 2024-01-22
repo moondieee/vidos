@@ -18,6 +18,7 @@ django-cors-headers = "^4.3.1"
 requests = "^2.31.0"
 django-filter = "^23.5"
 django-mongoengine = "^0.5.6"
+gunicorn = "^21.2.0"
 
 
 [build-system]

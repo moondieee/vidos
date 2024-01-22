@@ -4,6 +4,7 @@ Utilities for working with Django, mongoengine, and related functionalities.
 
 from django.http import Http404
 
+from core.shortcuts import get_object_or_404
 from .models import VideoWidget, Video
 
 
@@ -30,3 +31,11 @@ def get_video_from_widget(widget: VideoWidget, video_id: str) -> Video:
         raise Http404('Video not found.')
 
     return video
+
+
+def get_widget_or_404(user_id: int, widget_id: str):
+    return get_object_or_404(
+        VideoWidget,
+        user_id=user_id,
+        id=widget_id
+    )

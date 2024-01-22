@@ -1,15 +1,13 @@
 """
 Video widgets models by using BongoDB.
 """
-from bson import ObjectId
-
 from mongoengine import Document, EmbeddedDocument, fields
 
 
 class Button(EmbeddedDocument):
-    id = fields.ObjectIdField(
-        required=True,
-        default=ObjectId
+    id = fields.SequenceField(
+        primary_key=True,
+        sequence_name='button_id_sequence'
     )
     type = fields.StringField(
         required=True
@@ -24,9 +22,9 @@ class Button(EmbeddedDocument):
 
 
 class Video(EmbeddedDocument):
-    id = fields.ObjectIdField(
-        required=True,
-        default=ObjectId
+    id = fields.SequenceField(
+        primary_key=True,
+        sequence_name='video_id_sequence'
     )
     name = fields.StringField(
         default=None

@@ -7,11 +7,6 @@ from ..utils import get_video_from_widget
 
 
 class ButtonSerializer(mongoserializers.EmbeddedDocumentSerializer):
-    created = serializers.DateTimeField(
-        source='id.generation_time',
-        read_only=True
-    )
-
     class Meta:
         model = Button
         fields = (
@@ -19,11 +14,9 @@ class ButtonSerializer(mongoserializers.EmbeddedDocumentSerializer):
             'type',
             'name',
             'video_id',
-            'created',
         )
         read_only_fields = (
             'id',
-            'created',
         )
 
     def create(self, validated_data):
@@ -49,10 +42,6 @@ class ButtonSerializer(mongoserializers.EmbeddedDocumentSerializer):
 
 
 class VideoSerializer(mongoserializers.EmbeddedDocumentSerializer):
-    created = serializers.DateTimeField(
-        source='id.generation_time',
-        read_only=True
-    )
     buttons = ButtonSerializer(
         many=True,
         required=False,
@@ -66,13 +55,11 @@ class VideoSerializer(mongoserializers.EmbeddedDocumentSerializer):
             'name',
             'video_url',
             'buttons',
-            'created',
         )
         read_only_fields = (
             'id',
             'video_url',
             'buttons',
-            'created',
         )
 
     def create(self, validated_data):

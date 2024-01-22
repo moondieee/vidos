@@ -12,14 +12,6 @@ db = client.database
 
 video_widgets = db['video_widgets']
 
-# Sync MongoDB client
-sync_client = pymongo.MongoClient(
-    settings.MONGO_URI, serverSelectionTimeoutMS=10000
-)
-sync_db = sync_client.database
-
-sync_video_widgets = sync_db['video_widgets']
-
 
 class PyObjectId(ObjectId):
     @classmethod

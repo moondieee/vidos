@@ -1,4 +1,5 @@
-from bson import ObjectId
+from typing import List
+
 from fastapi import HTTPException, UploadFile
 from pydantic import BaseModel, validator
 
@@ -7,10 +8,8 @@ from core.settings import settings
 
 
 @form_body
-class FileUpload(BaseModel):
+class VideoUpload(BaseModel):
     file: UploadFile
-    video_widget_id: str
-    video_id: int
 
     @validator('file')
     def check_file_type(cls, file: UploadFile):
@@ -31,9 +30,15 @@ class FileUpload(BaseModel):
         return file
 
 
-class FileUploadResponse(BaseModel):
-    filename: str
-    url: str
+class Button(BaseModel):
+    id: int
+    type: str | None
+    name: str | None
+    video_id: int = None
 
-    class Config:
-        json_encoders = {ObjectId: str}
+
+class Video(BaseModel):
+    id: int
+    name: str | None
+    video_url: str | None
+    buttons: List[Button] | None

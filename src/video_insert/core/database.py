@@ -1,4 +1,3 @@
-import pymongo
 from bson import ObjectId
 from motor import motor_asyncio
 

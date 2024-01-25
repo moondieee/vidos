@@ -1,32 +1,41 @@
 from fastapi import APIRouter, Depends, Path, status
 
 from app.auth.auth import auth
-from app.files.schemas import FileUpload, FileUploadResponse
-from app.files.services import upload_file
+from app.files.schemas import VideoUpload, Video
+from app.files.services import update_video_url, upload_video
 from core.schemas import ExceptionModel
-from .permissions import is_owner
-from .services import get_filename, update_video_url
+
+from .permissions import is_existing_video, is_owner
 
 video_router = APIRouter(prefix='/video_widget', tags=['videos'])
 
 
 @video_router.post(
-    '/video/',
-    response_model=FileUploadResponse,
+    '/{widget_id}/video/{video_id}/',
+    response_model=Video,
     status_code=status.HTTP_201_CREATED,
     responses={
         status.HTTP_401_UNAUTHORIZED: {'model': ExceptionModel},
         status.HTTP_404_NOT_FOUND: {'model': ExceptionModel},
     },
     tags=['videos'],
-    dependencies=[Depends(is_owner)]
+    dependencies=[Depends(is_owner), Depends(is_existing_video)]
 )
-async def file_upload(
-    filename: str = Depends(get_filename),
-    file: FileUpload = Depends(),
+async def video_upload(
+    widget_id: str = Path(..., title='Widget ID'),
+    video_id: int = Path(..., title='Video ID'),
+
+    # filename: str = Depends(get_filename),
+    file: VideoUpload = Depends(),
     user: dict = Depends(auth)
 ):
-    file.file.filename = filename
-    if uploaded := await upload_file(file=file.file):
-        await update_video_url(file, uploaded.get('url'))
-        return uploaded
+    if video_url := await upload_video(
+        file.file,
+        user['id']
+    ):
+        if video_schema := await update_video_url(
+            video_url=video_url,
+            widget_id=widget_id,
+            video_id=video_id,
+        ):
+            return video_schema

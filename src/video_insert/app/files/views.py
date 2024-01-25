@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Path, status
 
 from app.auth.auth import auth
 from app.files.schemas import VideoUpload, Video
-from app.files.services import update_video_url, upload_video
+from app.files.services import update_video_url, upload_video, upload_video_previews
 from core.schemas import ExceptionModel
 
 from .permissions import is_existing_video, is_owner
@@ -33,9 +33,15 @@ async def video_upload(
         file.file,
         user['id']
     ):
+        preview_jpeg, preview_webp = await upload_video_previews(
+            video_url,
+            user['id']
+        )
         if video_schema := await update_video_url(
             video_url=video_url,
             widget_id=widget_id,
             video_id=video_id,
+            preview_jpeg_url=preview_jpeg,
+            preview_webp_url=preview_webp,
         ):
             return video_schema

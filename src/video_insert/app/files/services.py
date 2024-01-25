@@ -41,12 +41,12 @@ async def upload_video_previews(
     _, webp_image = cv2.imencode(".webp", frame)
 
     # Directory for previews of widget videos
-    directory = f'{user_id}/video_widgets/previews/'
+    directory = f'video_widgets/{user_id}/previews/'
     # Generate UUIDs for filenames
     jpeg_bytesio = BytesIO(jpeg_image.tobytes())
     webp_bytesio = BytesIO(webp_image.tobytes())
 
-    jpeg_filename = directory + str(uuid.uuid4()) + '.jpg' + 'test'
+    jpeg_filename = directory + str(uuid.uuid4()) + '.jpg'
     webp_filename = directory + str(uuid.uuid4()) + '.webp'
 
     # Upload jpeg and webp preview to Minio storage
@@ -87,7 +87,7 @@ async def upload_video(
     video.filename = str(uuid.uuid4()) + video.filename.split('.')[-1]
 
     # Directory for widget videos
-    directory = f'{user_id}/video_widgets/videos'
+    directory = f'video_widgets/{user_id}/videos'
     result = minio_client.upload_file(
         file=video,
         directory=directory
@@ -99,7 +99,9 @@ async def upload_video(
 async def update_video_url(
     video_url: str,
     widget_id: str,
-    video_id: int
+    video_id: int,
+    preview_jpeg_url: str,
+    preview_webp_url: str
 ) -> dict:
     """
     Обновление видео url в схеме виджета.
@@ -110,7 +112,9 @@ async def update_video_url(
     }
     update_query = {
         '$set': {
-            'videos.$[v].video_url': video_url
+            'videos.$[v].video_url': video_url,
+            'videos.$[v].preview_img_url': preview_webp_url,
+            'videos.$[v].preview_img_jpeg_url': preview_jpeg_url
         }
     }
     array_filters = [{'v._id': int(video_id)}]

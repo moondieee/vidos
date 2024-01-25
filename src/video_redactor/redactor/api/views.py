@@ -22,11 +22,16 @@ class VideoViewSet(MongoModelViewSet):
     serializer_class = VideoSerializer
 
     def get_queryset(self):
-        widget = get_widget_or_404(
+        self.widget = get_widget_or_404(
             self.request.user.id,
             self.kwargs.get('widget_id')
         )
-        return widget.videos
+        return self.widget.videos
+
+    # Video is updated only after saving a widget
+    def perform_update(self, serializer):
+        serializer.save()
+        self.widget.save()
 
     def perform_destroy(self, instance):
         widget = get_widget_or_404(
@@ -41,15 +46,20 @@ class ButtonViewSet(MongoModelViewSet):
     serializer_class = ButtonSerializer
 
     def get_queryset(self):
-        widget = get_widget_or_404(
+        self.widget = get_widget_or_404(
             self.request.user.id,
             self.kwargs.get('widget_id')
         )
         video = get_video_from_widget(
-            widget,
+            self.widget,
             self.kwargs.get('video_id')
         )
         return video.buttons
+
+    # Video is updated only after saving a widget
+    def perform_update(self, serializer):
+        serializer.save()
+        self.widget.save()
 
     def perform_destroy(self, instance):
         widget = get_widget_or_404(

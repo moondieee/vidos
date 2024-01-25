@@ -24,6 +24,15 @@ class Button(EmbeddedDocument):
     video_id = fields.IntField(
         default=None
     )
+    form_url = fields.StringField(
+        default=None
+    )
+    redirect_url = fields.StringField(
+        default=None
+    )
+    callback_url = fields.StringField(
+        default=None
+    )
 
 
 class Video(EmbeddedDocument):
@@ -35,6 +44,12 @@ class Video(EmbeddedDocument):
         default=None
     )
     video_url = fields.StringField(
+        default=None
+    )
+    preview_img_url = fields.StringField(
+        default=None
+    )
+    preview_img_jpeg_url = fields.StringField(
         default=None
     )
     buttons = fields.EmbeddedDocumentListField(

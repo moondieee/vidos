@@ -14,6 +14,9 @@ class ButtonSerializer(mongoserializers.EmbeddedDocumentSerializer):
             'type',
             'name',
             'video_id',
+            'form_url',
+            'redirect_url',
+            'callback_url',
         )
         read_only_fields = (
             'id',
@@ -54,11 +57,15 @@ class VideoSerializer(mongoserializers.EmbeddedDocumentSerializer):
             'id',
             'name',
             'video_url',
+            'preview_img_url',
+            'preview_img_jpeg_url',
             'buttons',
         )
         read_only_fields = (
             'id',
             'video_url',
+            'preview_img_url',
+            'preview_img_jpeg_url',
             'buttons',
         )
 

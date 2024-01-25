@@ -84,7 +84,7 @@ async def upload_video(
     :return: a str with URL of the uploaded video.
     """
     # Change filename to almost unique filename with a video format
-    video.filename = str(uuid.uuid4()) + video.filename.split('.')[-1]
+    video.filename = str(uuid.uuid4()) + '.' + video.filename.split('.')[-1]
 
     # Directory for widget videos
     directory = f'video_widgets/{user_id}/videos'

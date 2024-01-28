@@ -92,8 +92,51 @@ async def upload_video(
         file=video,
         directory=directory
     )
-    await upload_video_previews(result.location, user_id)
     return result.location
+
+
+async def delete_video_previews(
+    widget_id: str,
+    video_id: int,
+) -> dict:
+    """
+    Удаление видео и превью из меда хранилища.
+    """
+    filter_query = {
+        '_id': ObjectId(widget_id),
+        'videos._id': int(video_id)
+    }
+    try:
+        widget = await video_widgets.find_one(
+            filter_query
+        )
+        # found video object
+        for video in widget['videos']:
+            if video['_id'] == video_id:
+                found_video = video
+                break
+
+        # deleting video and previews
+        deleting_objects = (
+            'video_url',
+            'preview_img_url',
+            'preview_img_jpeg_url',
+        )
+        for object in deleting_objects:
+            if found_video.get(object):
+                minio_client.delete_file(found_video[object])
+
+    except Exception as err:
+        detail = 'Error deleting video of widget.'
+        logger.error(
+            '%s. %s',
+            detail,
+            err
+        )
+        raise HTTPException(
+            status_code=400,
+            detail=detail
+        )
 
 
 async def update_video_url(

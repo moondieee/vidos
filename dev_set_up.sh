@@ -21,6 +21,7 @@ fi
 
 # Docker container
 ACCOUNTS_ID=$(docker ps -qf "name=accounts")
+VIDEO_REDACTOR_ID=$(docker ps -qf "name=video_redactor")
 MONGODB_ID=$(docker ps -qf "name=mongodb")
 MINIO_ID=$(docker ps -qf "name=minio")
 
@@ -76,13 +77,22 @@ user.save()
 "
 
     echo "Getting token for admin@mail.com"
-    ADMIN_ID=$(docker exec -it $ACCOUNTS_ID poetry run python manage.py shell -c "from rest_framework.authtoken.models import Token; from django.contrib.auth import get_user_model; user = get_user_model().objects.get(email='admin@mail.com'); print(Token.objects.get_or_create(user=user)[0].key)")
-    echo "Token for admin@mail.com: $ADMIN_ID"
+    ADMIN_TOKEN=$(docker exec -it $ACCOUNTS_ID poetry run python manage.py shell -c "from rest_framework.authtoken.models import Token; from django.contrib.auth import get_user_model; user = get_user_model().objects.get(email='admin@mail.com'); print(Token.objects.get_or_create(user=user)[0].key)")
+    echo "Token for admin@mail.com: $ADMIN_TOKEN"
 else
     echo "Error: Container 'accounts' not found."
 fi
 
-# video widget schema set up
+# Video redactor service set up
+echo "Setting up backend accounts"
+if [ -n "$VIDEO_REDACTOR_ID" ]; then
+    echo "Collecting static"
+    docker exec -it $VIDEO_REDACTOR_ID poetry run python manage.py collectstatic --no-input
+else
+    echo "Error: Container 'video_redactor' not found."
+fi
+
+# Video widget schema set up
 if [ -n "$MONGO_INITDB_ROOT_USERNAME" ] && [ -n "$MONGO_INITDB_ROOT_PASSWORD" ] && [ -n "$MONGO_HOST" ] && [ -n "$MONGO_PORT" ] && [ -n "$MONGO_DATABASE" ]; then
     echo "Importing dev_widget.json to MongoDB collection video_widgets"
 
@@ -116,7 +126,7 @@ fi
 echo "Upload videos to video widget"
 for i in {1..3}; do
     curl -X POST \
-        -H "Authorization: Token 43ffca1e5f172eb03154f84f743f7321d5b8a3ec" \
+        -H "Authorization: Token $ADMIN_TOKEN" \
         -H "Cache-Control: no-cache" \
         -H "Content-Type: multipart/form-data; boundary=----WebKitFormBoundary<calculated when request is sent>" \
         -H "Accept: */*" \

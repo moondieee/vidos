@@ -2,7 +2,10 @@ from fastapi import APIRouter, Depends, Path, status
 
 from app.auth.auth import auth
 from app.files.schemas import VideoUpload, Video
-from app.files.services import update_video_url, upload_video, upload_video_previews
+from app.files.services import (delete_video_previews,
+                                update_video_url,
+                                upload_video,
+                                upload_video_previews)
 from core.schemas import ExceptionModel
 
 from .permissions import is_existing_video, is_owner
@@ -33,6 +36,8 @@ async def video_upload(
         file.file,
         user['id']
     ):
+        # deleting previos video and previews
+        await delete_video_previews(widget_id, video_id)
         preview_jpeg, preview_webp = await upload_video_previews(
             video_url,
             user['id']

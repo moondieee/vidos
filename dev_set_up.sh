@@ -111,3 +111,18 @@ if [ -n "$MINIO_ID" ]; then
 else
     echo "Error: Minio container not found."
 fi
+
+# Add videos to widget
+echo "Upload videos to video widget"
+for i in {1..3}; do
+    curl -X POST \
+        -H "Authorization: Token 43ffca1e5f172eb03154f84f743f7321d5b8a3ec" \
+        -H "Cache-Control: no-cache" \
+        -H "Content-Type: multipart/form-data; boundary=----WebKitFormBoundary<calculated when request is sent>" \
+        -H "Accept: */*" \
+        -H "Accept-Encoding: gzip, deflate, br" \
+        -H "Connection: keep-alive" \
+        -H "X-Content-Type: video" \
+        -F "file=@video1.mp4;type=video/mp4" \
+        localhost:3000/api/v1/video_insert/video_widget/65aebacb50e7a4df92e53dd3/video/1/
+done

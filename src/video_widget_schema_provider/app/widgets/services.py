@@ -16,6 +16,15 @@ async def convert_widget_data(widget: Dict[str, Any]) -> Dict[str, Any]:
 
     for video in widget['videos']:
         video['id'] = int(video['_id'])
+
+        # Replace values in video_url, preview_img_url, and preview_img_jpeg_url
+        if video.get('video_url'):
+            video['video_url'] = video['video_url'].replace("minio:9000", "localhost:3000")
+        if video.get('preview_img_url'):
+            video['preview_img_url'] = video['preview_img_url'].replace("minio:9000", "localhost:3000")
+        if video.get('preview_img_jpeg_url'):
+            video['preview_img_jpeg_url'] = video['preview_img_jpeg_url'].replace("minio:9000", "localhost:3000")
+
         for button in video['buttons']:
             button['id'] = int(button['_id'])
 

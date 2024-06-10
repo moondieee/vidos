@@ -1,0 +1,37 @@
+[{
+  "_id": {
+    "$oid": "65aebacb50e7a4df92e53dd3"
+  },
+  "user_id": 1,
+  "videos": [
+    {
+      "_id": 1,
+      "name": "Видео",
+      "preview_img_jpeg_url": "http://minio:9000/media/video_widgets/1/previews/82985137-5d41-41d8-85ba-e4de79fe21ed.jpg",
+      "preview_img_url": "http://minio:9000/media/video_widgets/1/previews/11ac58f8-00f5-4b6c-9b9c-da441d4d50ed.webp",
+      "video_url": "http://minio:9000/media/video_widgets/1/videos/69d7e513-9244-48cb-be88-9d4f8253a7d7.mp4",
+      "buttons": [
+        {
+          "_id": 1,
+          "type": "VIDEO",
+          "name": "Видео 2",
+          "video_id": 2
+        },
+        {
+          "_id": 2,
+          "type": "VIDEO",
+          "name": "Видео 3",
+          "video_id": 3
+        }
+      ]
+    },
+    {
+      "_id": 2,
+      "buttons": []
+    },
+    {
+      "_id": 3,
+      "buttons": []
+    }
+  ]
+}]
